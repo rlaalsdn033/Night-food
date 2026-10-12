@@ -1,0 +1,150 @@
+import React, { useState } from 'react';
+import { 
+  Utensils, Sparkles, Clock, Flame, ShieldAlert, Heart, 
+  RefreshCw, Dice5, ShoppingBag, 
+  AlertCircle, Info, Zap, CheckCircle2, Code2, Copy, Check
+} from 'lucide-react';
+
+const LOCAL_SNACK_DATABASE = [
+  {
+    menuName: "따뜻한 계란들깨죽 & 두부전",
+    calorie: "약 280 kcal",
+    digestiveBurden: "하 (매우 편함)",
+    tasteCategory: ["담백"],
+    cookingCategory: ["직접 조리"],
+    digestiveFriendly: true,
+    reason: "속을 편안하게 감싸주는 들깨의 고소함과 계란의 부드러움이 잠들기 전 위장에 부담을 주지 않는 최적의 밤참입니다.",
+    pairingTip: "따뜻한 보리차나 둥굴레차 한 잔과 함께 드시면 숙면에 큰 도움이 됩니다."
+  },
+  {
+    menuName: "편의점 감동란 & 두유 콤보",
+    calorie: "약 220 kcal",
+    digestiveBurden: "하 (속 편함)",
+    tasteCategory: ["담백", "느끼/고소"],
+    cookingCategory: ["편의점"],
+    digestiveFriendly: true,
+    reason: "늦은 밤 조리 없이 바로 구매할 수 있으며, 짭조름한 반숙란과 고소한 무설탕 두유로 단백질을 알차게 채웁니다.",
+    pairingTip: "소금이 배어있는 감동란과 따뜻하게 데운 두유를 함께 드셔보세요."
+  },
+  {
+    menuName: "무설탕 요거트 & 견과류 바나나 볼",
+    calorie: "약 250 kcal",
+    digestiveBurden: "하 (속 편함)",
+    tasteCategory: ["달콤", "담백"],
+    cookingCategory: ["간단 조리", "편의점"],
+    digestiveFriendly: true,
+    reason: "달콤한 야식이 당길 때 혈당 폭발 걱정 없이 즐길 수 있는 건강한 단맛 조합입니다.",
+    pairingTip: "시나몬 가루를 살짝 뿌리면 풍미가 더욱 풍성해집니다."
+  },
+  {
+    menuName: "불닭 볶음면 & 스트링치즈 꿀조합",
+    calorie: "약 580 kcal",
+    digestiveBurden: "상 (자극적)",
+    tasteCategory: ["매콤", "자극적"],
+    cookingCategory: ["편의점"],
+    digestiveFriendly: false,
+    reason: "오늘 하루 스트레스를 단번에 날려버릴 매콤함! 치즈를 찢어 올려 매운맛을 중화한 최고의 인기 조합입니다.",
+    pairingTip: "시원한 쿨피스나 탄산수와 함께 먹으면 스트레스 해소에 특효입니다."
+  },
+  {
+    menuName: "직화 뼈없는 닭발 & 주먹밥",
+    calorie: "약 650 kcal",
+    digestiveBurden: "상 (매움)",
+    tasteCategory: ["매콤", "자극적"],
+    cookingCategory: ["배달"],
+    digestiveFriendly: false,
+    reason: "쫄깃한 식감과 매콤한 불향이 밤 정취와 딱 어우러지는 대표적인 최강 야식입니다.",
+    pairingTip: "고소한 김가루 마요네즈 주먹밥을 동글동글 만들어서 닭발 양념에 찍어드세요."
+  },
+  {
+    menuName: "바삭한 숯불 양념 지코바 치킨",
+    calorie: "약 750 kcal",
+    digestiveBurden: "중~상",
+    tasteCategory: ["매콤", "달콤", "자극적"],
+    cookingCategory: ["배달"],
+    digestiveFriendly: false,
+    reason: "튀기지 않고 숯불에 구워 불맛이 깊게 베어있으며, 남은 양념에 밥을 비벼먹는 밥반찬 겸 야식입니다.",
+    pairingTip: "치킨 무와 떡사리를 추가하고, 마지막에 햇반 하나 비벼 먹는 '치밥'이 국룰입니다."
+  },
+  {
+    menuName: "에어프라이어 버터 갈릭 새우 구이",
+    calorie: "약 320 kcal",
+    digestiveBurden: "중 (고소함)",
+    tasteCategory: ["느끼/고소", "담백"],
+    cookingCategory: ["직접 조리"],
+    digestiveFriendly: true,
+    reason: "새우의 탱글탱글한 식감과 버터, 마늘의 풍미가 어우러져 고급스러운 분위기를 내는 야식입니다.",
+    pairingTip: "레몬즙을 살짝 짜서 뿌려주면 느끼함 없이 깔끔하게 즐길 수 있습니다."
+  },
+  {
+    menuName: "편의점 족발 찰순대 세트",
+    calorie: "약 520 kcal",
+    digestiveBurden: "중",
+    tasteCategory: ["자극적", "느끼/고소"],
+    cookingCategory: ["편의점"],
+    digestiveFriendly: false,
+    reason: "전자레인지 1분 30초면 완성! 쫀득한 족발과 순대를 새우젓 양념에 찍어 먹는 고품격 간편 야식입니다.",
+    pairingTip: "초고추장이나 쌈장을 살짝 곁들이면 맛이 훨씬 다채로워집니다."
+  },
+  {
+    menuName: "따뜻한 시원어묵탕 & 곤약면",
+    calorie: "약 210 kcal",
+    digestiveBurden: "하 (매우 속편함)",
+    tasteCategory: ["담백", "자극적"],
+    cookingCategory: ["직접 조리", "편의점"],
+    digestiveFriendly: true,
+    reason: "곤약면을 활용해 칼로리 부담은 거의 없으면서도 따끈하고 깊은 어묵 국물로 속을 든든히 채워줍니다.",
+    pairingTip: "청양고추를 송송 썰어 넣으면 맑고 칼칼한 국물 맛을 즐길 수 있습니다."
+  },
+  {
+    menuName: "달콤 고소한 콘치즈 그라탕",
+    calorie: "약 410 kcal",
+    digestiveBurden: "중",
+    tasteCategory: ["달콤", "느끼/고소"],
+    cookingCategory: ["직접 조리", "편의점"],
+    digestiveFriendly: false,
+    reason: "옥수수 통조림과 모짜렐라 치즈, 마요네즈만 있으면 5분 만에 완성되는 입안 가득 행복해지는 맛입니다.",
+    pairingTip: "핫소스를 살짝 떨어뜨려 먹으면 단짠단짠 매력이 배가됩니다."
+  }
+];
+
+// 백엔드/클라이언트 어디서든 쓸 수 있는 Gemini API 표준 호출 샘플 코드
+const GEMINI_API_SAMPLE_CODE = `
+// Gemini API 야식 추천 함수 (Node.js / JS Modern Fetch)
+async function getSnackRecommendations(userInput) {
+  const { currentTime, bedTime, taste, cookingMethod, considerDigestive } = userInput;
+
+  // 1. 요청 페이로드 구성
+  const promptQuery = \`
+현재 시간: \${currentTime}, 취침 예정 시간: \${bedTime}
+선호하는 맛: \${taste}, 조리 방식: \${cookingMethod}
+소화 부담 고려: \${considerDigestive ? '예(속편한 음식 위주)' : '아니오'}
+
+위 조건에 어울리는 한국 야식 메뉴 3가지를 추천해줘.
+\`.trim();
+
+  const systemPrompt = "너는 친절하고 위트 있는 야식 전문 큐레이터야. 반환 형식은 명시된 구조의 JSON 배열 형태이어야 해.";
+
+  const payload = {
+    contents: [{ role: 'user', parts: [{ text: promptQuery }] }],
+    systemInstruction: { parts: [{ text: systemPrompt }] },
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "ARRAY",
+        items: {
+          type: "OBJECT",
+          properties: {
+            menuName: { type: "STRING" },
+            calorie: { type: "STRING" },
+            digestiveBurden: { type: "STRING" },
+            reason: { type: "STRING" },
+            pairingTip: { type: "STRING" }
+          },
+          propertyOrdering: ["menuName", "calorie", "digestiveBurden", "reason", "pairingTip"]
+        }
+      }
+    }
+  };
+
+  // 2. Gemini API 호출 (gemini-3-flash
